@@ -1,0 +1,17 @@
+__pycache__
+*.pyc
+*.pyo
+*.pkl
+*.csv
+*.db
+*.log
+.git
+.gitignore
+*.md
+*.bat
+.vscode
+.idea
+node_modules
+webapp/uploads/*
+!webapp/uploads/.gitkeep
+

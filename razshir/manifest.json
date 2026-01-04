@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Проверка фишинга",
+  "version": "1.0.0",
+  "description": "Расширение для проверки страниц на фишинг с помощью AI модели",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:5000/*",
+    "http://127.0.0.1:5000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Проверка фишинга"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
+

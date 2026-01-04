@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка фишинга</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Проверка фишинга</h1>
+        </div>
+        
+        <div class="content">
+            <button id="checkBtn" class="check-button">
+                <span class="button-text">Проверить страницу</span>
+                <span class="button-loader" style="display: none;">⏳</span>
+            </button>
+            
+            <div id="status" class="status hidden"></div>
+            
+            <div id="results" class="results hidden">
+                <div class="result-header">
+                    <h2>Результаты анализа</h2>
+                </div>
+                
+                <div class="result-content">
+                    <div class="percentage-container">
+                        <div class="percentage-circle" id="percentageCircle">
+                            <span class="percentage-value" id="percentageValue">0%</span>
+                        </div>
+                        <div class="percentage-label" id="percentageLabel">Вероятность фишинга</div>
+                    </div>
+                    
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Статус:</span>
+                            <span class="detail-value" id="statusValue">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Уверенность:</span>
+                            <span class="detail-value" id="confidenceValue">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Найдено URL:</span>
+                            <span class="detail-value" id="urlFound">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Найдено Email:</span>
+                            <span class="detail-value" id="emailFound">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Найдено Телефон:</span>
+                            <span class="detail-value" id="phoneFound">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-preview">
+                        <div class="preview-label">Анализируемый текст:</div>
+                        <div class="preview-text" id="textPreview">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="settings">
+                <label>
+                    <input type="text" id="apiUrl" placeholder="http://localhost:5000" value="http://localhost:5000">
+                    <span>API URL</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
+

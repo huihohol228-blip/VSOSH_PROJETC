@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Проверка на фишинг</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">🛡️</span>
+                    Проверка на фишинг
+                </h1>
+                <p class="subtitle">Анализ текста, изображений и email-файлов с помощью AI</p>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="text">
+                <span class="tab-icon">📝</span>
+                Текст
+            </button>
+            <button class="tab-btn" data-tab="image">
+                <span class="tab-icon">📷</span>
+                Изображение
+            </button>
+            <button class="tab-btn" data-tab="eml">
+                <span class="tab-icon">📧</span>
+                Email (.eml)
+            </button>
+        </div>
+
+        <!-- Content -->
+        <main class="main-content">
+            <!-- Text Tab -->
+            <div class="tab-content active" id="text-tab">
+                <div class="card">
+                    <h2 class="card-title">Проверка текста</h2>
+                    <p class="card-description">Вставьте текст для анализа на фишинг</p>
+                    <textarea 
+                        id="text-input" 
+                        class="input-textarea" 
+                        placeholder="Введите текст для проверки...&#10;&#10;Пример:&#10;BankOfAmerica Alert. Please follow http://bit.do/cgjK-and re-activate"
+                        rows="8"
+                    ></textarea>
+                    <button class="btn btn-primary" id="check-text-btn">
+                        <span class="btn-icon">🔍</span>
+                        Проверить текст
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Tab -->
+            <div class="tab-content" id="image-tab">
+                <div class="card">
+                    <h2 class="card-title">Проверка изображения</h2>
+                    <p class="card-description">Загрузите изображение с текстом (PNG, JPG, JPEG)</p>
+                    <div class="file-upload-area" id="image-upload-area">
+                        <input type="file" id="image-input" accept="image/*" class="file-input">
+                        <div class="file-upload-content">
+                            <span class="file-icon">📷</span>
+                            <p class="file-text">Перетащите изображение сюда или <span class="file-link">выберите файл</span></p>
+                            <p class="file-hint">Поддерживаются: PNG, JPG, JPEG, GIF (до 16 MB)</p>
+                        </div>
+                        <div class="file-preview" id="image-preview"></div>
+                    </div>
+                    <button class="btn btn-primary" id="check-image-btn" disabled>
+                        <span class="btn-icon">🔍</span>
+                        Проверить изображение
+                    </button>
+                </div>
+            </div>
+
+            <!-- EML Tab -->
+            <div class="tab-content" id="eml-tab">
+                <div class="card">
+                    <h2 class="card-title">Проверка .eml файла</h2>
+                    <p class="card-description">Загрузите .eml файл для анализа</p>
+                    <div class="file-upload-area" id="eml-upload-area">
+                        <input type="file" id="eml-input" accept=".eml" class="file-input">
+                        <div class="file-upload-content">
+                            <span class="file-icon">📧</span>
+                            <p class="file-text">Перетащите .eml файл сюда или <span class="file-link">выберите файл</span></p>
+                            <p class="file-hint">Формат: .eml (до 16 MB)</p>
+                        </div>
+                        <div class="file-preview" id="eml-preview"></div>
+                    </div>
+                    <button class="btn btn-primary" id="check-eml-btn" disabled>
+                        <span class="btn-icon">🔍</span>
+                        Проверить .eml файл
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Анализирую...</p>
+            </div>
+
+            <!-- Results -->
+            <div class="results-container" id="results-container"></div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Использует модель машинного обучения с точностью ~98%</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+

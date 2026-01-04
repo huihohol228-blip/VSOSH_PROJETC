@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🛡️ Проверка на фишинг</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/webapp/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">🛡️</span>
+                    Проверка на фишинг
+                </h1>
+                <p class="subtitle">Анализ текста, изображений и email-файлов</p>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="text">
+                <span class="tab-icon">📝</span>
+                Текст
+            </button>
+            <button class="tab-btn" data-tab="image">
+                <span class="tab-icon">📷</span>
+                Фото
+            </button>
+            <button class="tab-btn" data-tab="eml">
+                <span class="tab-icon">📧</span>
+                Email
+            </button>
+        </div>
+
+        <!-- Content -->
+        <main class="main-content">
+            <!-- Text Tab -->
+            <div class="tab-content active" id="text-tab">
+                <div class="card">
+                    <h2 class="card-title">Проверка текста</h2>
+                    <textarea 
+                        id="text-input" 
+                        class="input-textarea" 
+                        placeholder="Введите текст для проверки..."
+                        rows="6"
+                    ></textarea>
+                    <button class="btn btn-primary" id="check-text-btn">
+                        <span class="btn-icon">🔍</span>
+                        Проверить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Tab -->
+            <div class="tab-content" id="image-tab">
+                <div class="card">
+                    <h2 class="card-title">Проверка изображения</h2>
+                    <div class="file-upload-area" id="image-upload-area">
+                        <input type="file" id="image-input" accept="image/*" class="file-input">
+                        <div class="file-upload-content">
+                            <span class="file-icon">📷</span>
+                            <p class="file-text">Нажмите, чтобы выбрать фото</p>
+                        </div>
+                        <div class="file-preview" id="image-preview"></div>
+                    </div>
+                    <button class="btn btn-primary" id="check-image-btn" disabled>
+                        <span class="btn-icon">🔍</span>
+                        Проверить
+                    </button>
+                </div>
+            </div>
+
+            <!-- EML Tab -->
+            <div class="tab-content" id="eml-tab">
+                <div class="card">
+                    <h2 class="card-title">Проверка .eml файла</h2>
+                    <div class="file-upload-area" id="eml-upload-area">
+                        <input type="file" id="eml-input" accept=".eml" class="file-input">
+                        <div class="file-upload-content">
+                            <span class="file-icon">📧</span>
+                            <p class="file-text">Нажмите, чтобы выбрать .eml файл</p>
+                        </div>
+                        <div class="file-preview" id="eml-preview"></div>
+                    </div>
+                    <button class="btn btn-primary" id="check-eml-btn" disabled>
+                        <span class="btn-icon">🔍</span>
+                        Проверить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Анализирую...</p>
+            </div>
+
+            <!-- Results -->
+            <div class="results-container" id="results-container"></div>
+        </main>
+    </div>
+
+    <script src="/webapp/app.js"></script>
+</body>
+</html>
+
