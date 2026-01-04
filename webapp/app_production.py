@@ -60,13 +60,20 @@ def load_model():
         model_dir = project_root / "modelN"
         phishing_model = PhishingModel(model_dir=str(model_dir))
         logger.info("Модель успешно загружена")
+        return True
     except Exception as e:
         logger.error(f"Ошибка загрузки модели: {e}")
-        raise
+        logger.error("Приложение запустится, но проверка на фишинг не будет работать")
+        phishing_model = None
+        return False
 
 
-# Загружаем модель при импорте
-load_model()
+# Загружаем модель при импорте (не падаем если модель не загрузилась)
+try:
+    load_model()
+except Exception as e:
+    logger.error(f"Критическая ошибка при загрузке модели: {e}")
+    # Продолжаем работу, но модель будет None
 
 
 @app.route('/')
@@ -116,10 +123,18 @@ def webapp_static(filename):
 @app.route('/api/health')
 def health():
     """Проверка здоровья API"""
-    return jsonify({
-        "status": "ok",
-        "model_loaded": phishing_model is not None
-    })
+    try:
+        return jsonify({
+            "status": "ok",
+            "model_loaded": phishing_model is not None,
+            "service": "phishing-detector"
+        }), 200
+    except Exception as e:
+        logger.error(f"Health check error: {e}")
+        return jsonify({
+            "status": "error",
+            "error": str(e)
+        }), 500
 
 
 @app.route('/api/predict/text', methods=['POST'])

@@ -19,9 +19,9 @@ COPY . .
 # Создаем папку для загрузок
 RUN mkdir -p webapp/uploads
 
-# Порты
+# Порты (Railway использует переменную PORT)
 EXPOSE 5000
 
-# Запуск приложения
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "webapp.app_production:app"]
+# Запуск приложения (используем PORT из окружения)
+CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 2 --timeout 120 webapp.app_production:app"
 

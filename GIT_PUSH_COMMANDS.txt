@@ -1,0 +1,21 @@
+# Команды для загрузки в VSOSH_PROJETC
+
+# 1. Настройте Git (если еще не настроено)
+git config --global user.name "ваше имя"
+git config --global user.email "ваш@email.com"
+
+# 2. Удалите старый remote (если был)
+git remote remove origin
+
+# 3. Подключите новый репозиторий
+git remote add origin https://github.com/huihohol228-blip/VSOSH_PROJETC.git
+
+# 4. Сделайте коммит (если еще не сделали)
+git commit -m "Initial commit: Phishing detection project"
+
+# 5. Переименуйте ветку в main
+git branch -M main
+
+# 6. Загрузите на GitHub
+git push -u origin main
+
