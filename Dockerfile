@@ -23,5 +23,6 @@ RUN mkdir -p webapp/uploads
 EXPOSE 5000
 
 # Запуск приложения (используем PORT из окружения)
-CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 2 --timeout 120 webapp.app_production:app"
+# Railway автоматически устанавливает PORT, используем его
+CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --access-logfile - --error-logfile - --log-level info webapp.app_production:app
 

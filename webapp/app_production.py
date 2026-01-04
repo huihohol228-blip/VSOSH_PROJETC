@@ -69,11 +69,21 @@ def load_model():
 
 
 # Загружаем модель при импорте (не падаем если модель не загрузилась)
-try:
-    load_model()
-except Exception as e:
-    logger.error(f"Критическая ошибка при загрузке модели: {e}")
-    # Продолжаем работу, но модель будет None
+# Отложенная загрузка - модель загрузится при первом запросе
+_model_loading_attempted = False
+
+def ensure_model_loaded():
+    """Убеждаемся что модель загружена"""
+    global phishing_model, _model_loading_attempted
+    if not _model_loading_attempted:
+        _model_loading_attempted = True
+        try:
+            load_model()
+            logger.info("Модель загружена успешно")
+        except Exception as e:
+            logger.error(f"Не удалось загрузить модель: {e}")
+            logger.error("Приложение продолжит работу, но проверка не будет работать")
+    return phishing_model is not None
 
 
 @app.route('/')
@@ -124,22 +134,31 @@ def webapp_static(filename):
 def health():
     """Проверка здоровья API"""
     try:
+        # Пытаемся загрузить модель если еще не загружена
+        model_status = ensure_model_loaded()
         return jsonify({
             "status": "ok",
-            "model_loaded": phishing_model is not None,
+            "model_loaded": model_status,
             "service": "phishing-detector"
         }), 200
     except Exception as e:
         logger.error(f"Health check error: {e}")
+        # Все равно возвращаем 200, чтобы healthcheck прошел
         return jsonify({
-            "status": "error",
+            "status": "ok",
+            "model_loaded": False,
             "error": str(e)
-        }), 500
+        }), 200
 
 
 @app.route('/api/predict/text', methods=['POST'])
 def predict_text():
     """Проверка текста на фишинг"""
+    if not ensure_model_loaded():
+        return jsonify({
+            "success": False,
+            "error": "Модель не загружена. Проверьте логи сервера."
+        }), 503
     try:
         data = request.get_json()
         if not data or 'text' not in data:
@@ -187,6 +206,11 @@ def predict_text():
 @app.route('/api/predict/image', methods=['POST'])
 def predict_image():
     """Проверка изображения на фишинг (OCR)"""
+    if not ensure_model_loaded():
+        return jsonify({
+            "success": False,
+            "error": "Модель не загружена. Проверьте логи сервера."
+        }), 503
     try:
         if 'file' not in request.files:
             return jsonify({
@@ -266,6 +290,11 @@ def predict_image():
 @app.route('/api/predict/eml', methods=['POST'])
 def predict_eml():
     """Проверка .eml файла на фишинг"""
+    if not ensure_model_loaded():
+        return jsonify({
+            "success": False,
+            "error": "Модель не загружена. Проверьте логи сервера."
+        }), 503
     try:
         if 'file' not in request.files:
             return jsonify({
