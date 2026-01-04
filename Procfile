@@ -1,2 +1,1 @@
-web: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 webapp.app_production:app
-
+web: python -c "import os; port = int(os.environ.get('PORT', 5000)); from webapp.app_production import app; app.run(host='0.0.0.0', port=port, debug=False)"

@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем requirements
+# Копируем requirements и устанавливаем зависимости
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -17,13 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Создаем папку для загрузок
-RUN mkdir -p webapp/uploads
+RUN mkdir -p webapp/uploads && chmod 755 webapp/uploads
 
-# Порты (Railway использует переменную PORT)
-EXPOSE 5000
+# Переменная окружения для порта (Railway установит PORT)
+ENV PORT=5000
 
-# Запуск приложения (используем PORT из окружения)
-# Railway автоматически устанавливает PORT, используем его
-# Используем shell форму для раскрытия переменной $PORT
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 2 --timeout 120 --access-logfile - --error-logfile - --log-level info webapp.app_production:app"]
-
+# Запуск через скрипт, который правильно обработает PORT
+CMD python -c "import os; port = int(os.environ.get('PORT', 5000)); from webapp.app_production import app; app.run(host='0.0.0.0', port=port, debug=False)"
