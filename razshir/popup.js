@@ -103,7 +103,7 @@ function extractPageText() {
 // Функция для отправки запроса к API
 async function checkPhishing(text, url, email, phone) {
     const apiUrl = apiUrlInput.value || DEFAULT_API_URL;
-    const endpoint = `${apiUrl}/predict`;
+    const endpoint = `${apiUrl}/api/predict/text`;  // Исправлен endpoint
     
     try {
         const response = await fetch(endpoint, {
@@ -112,10 +112,7 @@ async function checkPhishing(text, url, email, phone) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                text: text,
-                url: url,
-                email: email,
-                phone: phone
+                text: text  // API принимает только text, остальное определяет сам
             })
         });
         
@@ -133,9 +130,10 @@ async function checkPhishing(text, url, email, phone) {
 
 // Функция для обновления UI с результатами
 function updateResults(data, pageInfo) {
-    const percentage = data.result.phishing_percentage;
-    const isPhishing = data.result.is_phishing;
-    const confidence = data.result.confidence;
+    // Исправляем формат ответа под новый API
+    const percentage = data.result?.percentage || data.result?.phishing_percentage || 0;
+    const isPhishing = data.result?.is_phishing || false;
+    const confidence = data.result?.confidence || 0;
     
     // Обновляем процент
     percentageValue.textContent = `${percentage.toFixed(1)}%`;
@@ -200,9 +198,9 @@ checkBtn.addEventListener('click', async () => {
         // Отправляем запрос к API
         const result = await checkPhishing(
             pageInfo.text,
-            pageInfo.url,
-            pageInfo.email,
-            pageInfo.phone
+            false,  // API сам определяет наличие URL/email/phone
+            false,
+            false
         );
         
         if (result.success) {
@@ -228,7 +226,7 @@ checkBtn.addEventListener('click', async () => {
 async function checkAPIHealth() {
     const apiUrl = apiUrlInput.value || DEFAULT_API_URL;
     try {
-        const response = await fetch(`${apiUrl}/health`);
+        const response = await fetch(`${apiUrl}/api/health`);  // Исправлен endpoint
         if (response.ok) {
             showStatus('API доступен', 'success');
             setTimeout(hideStatus, 2000);
