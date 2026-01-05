@@ -28,3 +28,4 @@ CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-5000} ..."]
 
 3. Проверьте что healthcheck проходит
 
+

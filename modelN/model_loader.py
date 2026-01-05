@@ -30,8 +30,8 @@ class PhishingModel:
         self.load_model()
     
     def load_model(self):
-        """Загрузка модели и векторизатора"""
-        model_path = os.path.join(self.model_dir, "phishing_model_rf.pkl")
+        """Загрузка модели и векторизатора (использует Logistic Regression - лучшая точность 98.82%)"""
+        model_path = os.path.join(self.model_dir, "phishing_model_lr.pkl")
         vectorizer_path = os.path.join(self.model_dir, "tfidf_vectorizer.pkl")
         
         if not os.path.exists(model_path):
@@ -55,8 +55,8 @@ class PhishingModel:
         text = str(text)
         # Удаляем лишние пробелы
         text = re.sub(r'\s+', ' ', text)
-        # Удаляем специальные символы, но оставляем буквы, цифры и основные знаки
-        text = re.sub(r'[^\w\s.,!?]', ' ', text)
+        # Удаляем специальные символы, но оставляем буквы, цифры и основные знаки (включая @ и / для URL и email)
+        text = re.sub(r'[^\w\s.,!?@:/]', ' ', text)
         return text.strip().lower()
     
     def predict(self, text, url=False, email=False, phone=False):

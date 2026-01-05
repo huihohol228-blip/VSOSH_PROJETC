@@ -93,3 +93,4 @@ python bot.py
 
 Если нужен Web App интерфейс, используйте **cloudflared** - он бесплатный и проще чем ngrok.
 
+

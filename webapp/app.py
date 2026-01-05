@@ -15,10 +15,32 @@ import logging
 
 # Добавляем путь к modelN для импорта модели
 project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root / "modelN"))
+modelN_path = project_root / "modelN"
+
+# Добавляем modelN в sys.path для импорта
+if str(modelN_path) not in sys.path:
+    sys.path.insert(0, str(modelN_path))
 
 # Импорт модели
-from model_loader import PhishingModel
+try:
+    # Пробуем импортировать через sys.path
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "model_loader", 
+        str(modelN_path / "model_loader.py")
+    )
+    model_loader = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(model_loader)
+    PhishingModel = model_loader.PhishingModel
+except Exception as e:
+    # Fallback на обычный импорт
+    try:
+        from model_loader import PhishingModel  # type: ignore
+    except ImportError:
+        print(f"Ошибка импорта model_loader: {e}")
+        print(f"Путь к modelN: {modelN_path}")
+        print(f"Файл существует: {(modelN_path / 'model_loader.py').exists()}")
+        raise
 
 # Импорт утилит из текущей папки
 current_dir = Path(__file__).parent

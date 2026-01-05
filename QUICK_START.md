@@ -60,3 +60,4 @@ python webapp_bot.py
 - Убедитесь что установлен Tesseract OCR (для проверки изображений)
 - Проверьте токен бота в `tgbot/bot*.py`
 
+

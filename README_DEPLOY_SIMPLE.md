@@ -38,3 +38,4 @@ pip install -r requirements.txt
 
 **Рекомендую Render.com - он самый простой!** 🎯
 
+

@@ -93,3 +93,4 @@ WEBAPP_URL = "https://phishing-detector.onrender.com/webapp"
 
 После настройки Render автоматически будет обновлять приложение при каждом `git push`!
 
+

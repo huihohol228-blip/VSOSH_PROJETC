@@ -18,7 +18,7 @@ BOT_TOKEN = "8442272401:AAGVDGyYOixzQESjNDhfaw_xMXW5zE6rdjw"
 
 # ⚠️ ЗАМЕНИТЕ НА ВАШ HTTPS URL ПОСЛЕ ДЕПЛОЯ НА RENDER/Railway
 # Например: https://phishing-detector.onrender.com/webapp
-WEBAPP_URL = "https://your-app-url.onrender.com/webapp"  # ⚠️ ЗАМЕНИТЕ НА ВАШ URL!
+WEBAPP_URL = "https://vsosh-projetc.onrender.com/webapp"  # ✅ Исправлен путь (добавлен /webapp)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):

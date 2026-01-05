@@ -101,9 +101,9 @@ function extractPageText() {
 }
 
 // Функция для отправки запроса к API
-async function checkPhishing(text, url, email, phone) {
+async function checkPhishing(text) {
     const apiUrl = apiUrlInput.value || DEFAULT_API_URL;
-    const endpoint = `${apiUrl}/api/predict/text`;  // Исправлен endpoint
+    const endpoint = `${apiUrl}/api/predict/text`;
     
     try {
         const response = await fetch(endpoint, {
@@ -112,15 +112,18 @@ async function checkPhishing(text, url, email, phone) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                text: text  // API принимает только text, остальное определяет сам
+                text: text
             })
         });
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('API ошибка:', response.status, errorText);
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
+        console.log('Ответ API:', data);
         return data;
     } catch (error) {
         console.error('Ошибка при запросе к API:', error);
@@ -130,10 +133,16 @@ async function checkPhishing(text, url, email, phone) {
 
 // Функция для обновления UI с результатами
 function updateResults(data, pageInfo) {
-    // Исправляем формат ответа под новый API
-    const percentage = data.result?.percentage || data.result?.phishing_percentage || 0;
-    const isPhishing = data.result?.is_phishing || false;
-    const confidence = data.result?.confidence || 0;
+    console.log('Данные от API:', data); // Для отладки
+    
+    // Получаем данные из правильного формата ответа API
+    const result = data.result || {};
+    const found = data.found || {};
+    
+    const percentage = result.percentage || 0;
+    const isPhishing = result.is_phishing || false;
+    const confidence = result.confidence || 0;
+    const riskName = result.risk_name || 'Неизвестно';
     
     // Обновляем процент
     percentageValue.textContent = `${percentage.toFixed(1)}%`;
@@ -160,13 +169,13 @@ function updateResults(data, pageInfo) {
     
     // Обновляем детали
     confidenceValue.textContent = `${confidence.toFixed(1)}%`;
-    urlFound.textContent = pageInfo.url ? `Да (${pageInfo.urlCount})` : 'Нет';
-    emailFound.textContent = pageInfo.email ? `Да (${pageInfo.emailCount})` : 'Нет';
-    phoneFound.textContent = pageInfo.phone ? `Да (${pageInfo.phoneCount})` : 'Нет';
+    urlFound.textContent = found.url_count > 0 ? `Да (${found.url_count})` : 'Нет';
+    emailFound.textContent = found.email_count > 0 ? `Да (${found.email_count})` : 'Нет';
+    phoneFound.textContent = found.phone_count > 0 ? `Да (${found.phone_count})` : 'Нет';
     
     // Показываем превью текста
-    const previewText = data.input.text || pageInfo.text.substring(0, 200);
-    textPreview.textContent = previewText + (pageInfo.text.length > 200 ? '...' : '');
+    const previewText = data.text_preview || pageInfo.text.substring(0, 200) || 'Нет текста';
+    textPreview.textContent = previewText + (previewText.length > 200 ? '...' : '');
     
     // Показываем результаты
     resultsDiv.classList.remove('hidden');
@@ -196,14 +205,11 @@ checkBtn.addEventListener('click', async () => {
         showStatus('Анализ текста...', 'info');
         
         // Отправляем запрос к API
-        const result = await checkPhishing(
-            pageInfo.text,
-            false,  // API сам определяет наличие URL/email/phone
-            false,
-            false
-        );
+        const result = await checkPhishing(pageInfo.text);
         
-        if (result.success) {
+        console.log('Результат API:', result); // Для отладки
+        
+        if (result.success !== false) {
             updateResults(result, pageInfo);
             showStatus('Анализ завершен!', 'success');
         } else {
