@@ -228,13 +228,32 @@ def predict_image():
         file.save(str(filepath))
         
         try:
+            # Проверяем доступность OCR
+            if extract_text_from_image is None:
+                return jsonify({
+                    "success": False,
+                    "error": "OCR не доступен. Установите pytesseract и Tesseract OCR"
+                }), 500
+            
             # Извлекаем текст с помощью OCR
-            extracted_text = extract_text_from_image(str(filepath))
+            try:
+                extracted_text = extract_text_from_image(str(filepath))
+            except ImportError as ie:
+                return jsonify({
+                    "success": False,
+                    "error": f"OCR библиотеки не установлены: {str(ie)}"
+                }), 500
+            except Exception as ocr_error:
+                logger.error(f"Ошибка OCR: {ocr_error}")
+                return jsonify({
+                    "success": False,
+                    "error": f"Ошибка распознавания текста: {str(ocr_error)}"
+                }), 500
             
             if not extracted_text or len(extracted_text.strip()) == 0:
                 return jsonify({
                     "success": False,
-                    "error": "Не удалось распознать текст на изображении"
+                    "error": "Не удалось распознать текст на изображении. Возможно, на изображении нет текста или текст не читается."
                 }), 400
             
             # Извлекаем URL, email, телефоны

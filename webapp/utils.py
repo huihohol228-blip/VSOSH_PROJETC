@@ -82,15 +82,46 @@ def extract_text_from_image(image_path: str) -> str:
     if not OCR_AVAILABLE:
         raise ImportError(
             "Библиотеки для OCR не установлены. Установите:\n"
-            "pip install pytesseract pillow"
+            "pip install pytesseract pillow\n"
+            "И установите Tesseract OCR: https://github.com/tesseract-ocr/tesseract"
         )
     
     try:
+        # Проверяем существование файла
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"Изображение не найдено: {image_path}")
+        
+        # Открываем изображение
         image = Image.open(image_path)
-        text = pytesseract.image_to_string(image, lang='eng+rus')
-        return text.strip()
+        
+        # Конвертируем в RGB если нужно
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        
+        # Извлекаем текст с поддержкой английского и русского
+        try:
+            text = pytesseract.image_to_string(image, lang='eng+rus')
+        except Exception as lang_error:
+            # Если eng+rus не доступен, пробуем только английский
+            try:
+                text = pytesseract.image_to_string(image, lang='eng')
+            except Exception:
+                # Если и английский не работает, пробуем без указания языка
+                text = pytesseract.image_to_string(image)
+        
+        return text.strip() if text else ""
+        
+    except FileNotFoundError:
+        raise
     except Exception as e:
-        raise Exception(f"Ошибка при извлечении текста: {str(e)}")
+        error_msg = str(e)
+        if "tesseract" in error_msg.lower() or "tesseract_cmd" in error_msg.lower():
+            raise Exception(
+                f"Tesseract OCR не найден. Установите Tesseract OCR:\n"
+                f"Windows: https://github.com/UB-Mannheim/tesseract/wiki\n"
+                f"Ошибка: {error_msg}"
+            )
+        raise Exception(f"Ошибка при извлечении текста из изображения: {error_msg}")
 
 
 def parse_eml_file(eml_path: str) -> Dict[str, str]:
