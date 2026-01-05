@@ -15,26 +15,38 @@ try:
     import platform
     import shutil
     
-    # Автоматическое определение пути к Tesseract для Windows
+    # Автоматическое определение пути к Tesseract
+    tesseract_found = False
+    
     if platform.system() == 'Windows':
+        # Windows: проверяем стандартные пути
         possible_paths = [
             r'C:\Program Files\Tesseract-OCR\tesseract.exe',
             r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
             rf'C:\Users\{os.environ.get("USERNAME", "")}\AppData\Local\Programs\Tesseract-OCR\tesseract.exe',
             r'C:\Tesseract-OCR\tesseract.exe',
         ]
-        tesseract_found = False
         for path in possible_paths:
             if os.path.exists(path):
                 pytesseract.pytesseract.tesseract_cmd = path
                 tesseract_found = True
                 break
-        
-        if not tesseract_found:
-            tesseract_path = shutil.which('tesseract')
-            if tesseract_path:
-                pytesseract.pytesseract.tesseract_cmd = tesseract_path
+    
+    # Для Linux и других систем используем which (должно найти в PATH)
+    if not tesseract_found:
+        tesseract_path = shutil.which('tesseract')
+        if tesseract_path:
+            pytesseract.pytesseract.tesseract_cmd = tesseract_path
+            tesseract_found = True
+    
+    # Если не нашли, пробуем стандартный путь для Linux
+    if not tesseract_found and platform.system() == 'Linux':
+        linux_paths = ['/usr/bin/tesseract', '/usr/local/bin/tesseract']
+        for path in linux_paths:
+            if os.path.exists(path):
+                pytesseract.pytesseract.tesseract_cmd = path
                 tesseract_found = True
+                break
     
     OCR_AVAILABLE = True
 except ImportError:
