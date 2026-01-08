@@ -9,3 +9,5 @@ pytesseract>=0.3.10
 werkzeug>=2.3.0
 
 
+
+

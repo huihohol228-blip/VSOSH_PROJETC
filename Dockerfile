@@ -30,3 +30,5 @@ EXPOSE 5000
 # Команда запуска
 CMD python -c "import os; port = int(os.environ.get('PORT', 5000)); from webapp.app_production import app; app.run(host='0.0.0.0', port=port, debug=False)"
 
+
+
